@@ -133,4 +133,58 @@ class InsuranceProductControllerIntegrationTest {
                 .andExpect(jsonPath("$.errors.name", notNullValue()))
                 .andExpect(jsonPath("$.errors.basePremium", notNullValue()));
     }
+
+    @Test
+    void shouldReturnBadRequestWhenCoverDoesNotBelongToProduct() throws Exception {
+        // Create Product 1
+        InsuranceProduct p1 = InsuranceProduct.builder()
+                .name("Product 1")
+                .type(ProductType.TRAVEL)
+                .basePremium(new BigDecimal("10.00"))
+                .active(true)
+                .build();
+        p1 = productRepository.save(p1);
+
+        // Create Product 2
+        InsuranceProduct p2 = InsuranceProduct.builder()
+                .name("Product 2")
+                .type(ProductType.HOME)
+                .basePremium(new BigDecimal("20.00"))
+                .active(true)
+                .build();
+        p2 = productRepository.save(p2);
+
+        // Add a cover to Product 2
+        Cover coverOfP2 = Cover.builder()
+                .name("Accidental cover of P2")
+                .coverType(CoverType.PROPERTY_DAMAGE)
+                .coverageLimit(new BigDecimal("1000.00"))
+                .product(p2)
+                .build();
+        p2.getCovers().add(coverOfP2);
+        p2 = productRepository.save(p2);
+        Cover savedCoverOfP2 = p2.getCovers().get(0);
+
+        // Attempt to update Cover of Product 2 using Product 1's ID
+        Cover updatePayload = Cover.builder()
+                .name("Mismatched Update")
+                .coverType(CoverType.PROPERTY_DAMAGE)
+                .coverageLimit(new BigDecimal("2000.00"))
+                .build();
+
+        String updateJson = objectMapper.writeValueAsString(updatePayload);
+        mockMvc.perform(put("/api/products/" + p1.getId() + "/covers/" + savedCoverOfP2.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(updateJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("Bad Request")))
+                .andExpect(jsonPath("$.message", containsString("Cover does not belong to the specified product")));
+
+        // Attempt to delete Cover of Product 2 using Product 1's ID
+        mockMvc.perform(delete("/api/products/" + p1.getId() + "/covers/" + savedCoverOfP2.getId()))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("Bad Request")))
+                .andExpect(jsonPath("$.message", containsString("Cover does not belong to the specified product")));
+    }
 }
+
