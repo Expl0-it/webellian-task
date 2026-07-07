@@ -35,7 +35,7 @@ The backend is built with **Spring Boot 4.1.0** and **Java 21**, using a local r
 - **Relational Persistence**: Uses SQLite with Hibernate and Spring Data JPA.
 - **Cascading Deletions**: Deleting an insurance product automatically deletes all nested covers (one-to-many cascading).
 - **Validation**: Full validation rules applied to entities (e.g., base premium and cover limits must be > 0; names cannot be blank).
-- **Global Error Handling**: Custom REST exception mapping returning structured RFC-7807/JSON errors.
+- **Global Error Handling**: Custom REST exception mapping returning structured JSON errors.
 - **CORS Support**: Configured to allow incoming calls from the frontend server.
 - **Database Seeder**: Detects if the database is empty on startup and seeds 4 realistic insurance products with detailed covers.
 
@@ -53,7 +53,7 @@ The backend is built with **Spring Boot 4.1.0** and **Java 21**, using a local r
    ./mvnw spring-boot:run
    ```
 
-   *The server will start on port `8080`. SQLite database file `safehaven.db` will be updated/created automatically.*
+   *The server will start on port `8080`. SQLite database file `safehaven.db` will be updated/created automatically if persistent storage is configured.*
 
 ### How to Run Tests
 
