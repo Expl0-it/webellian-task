@@ -23,9 +23,15 @@ webellian-task/
 
 ## 1. Backend (Java + Spring Boot)
 
-The backend is built with **Spring Boot 4.1.0** and **Java 21**, using a local relational **SQLite** database (`safehaven.db` in the backend root). It features full CRUD operations for `InsuranceProduct` and its associated `Cover`s. 
+The backend is built with **Spring Boot 4.1.0** and **Java 21**, using a local relational **SQLite** database (`safehaven.db` in the backend root) or an in memory database solution. It features full CRUD operations for `InsuranceProduct` and its associated `Cover`s.
+
+> [!IMPORTANT]
+> The `Technical Requirements` specified the need to use a relational in-memory
+> database but in `backend/src/main/resources/application.properties` there is
+> also a commented configuration for persistent db using SQLite .db file.
 
 ### Features
+
 - **Relational Persistence**: Uses SQLite with Hibernate and Spring Data JPA.
 - **Cascading Deletions**: Deleting an insurance product automatically deletes all nested covers (one-to-many cascading).
 - **Validation**: Full validation rules applied to entities (e.g., base premium and cover limits must be > 0; names cannot be blank).
@@ -34,18 +40,25 @@ The backend is built with **Spring Boot 4.1.0** and **Java 21**, using a local r
 - **Database Seeder**: Detects if the database is empty on startup and seeds 4 realistic insurance products with detailed covers.
 
 ### How to Run the Backend
+
 1. Navigate to the `backend` directory:
+
    ```bash
    cd backend
    ```
+
 2. Build and run the Spring Boot application using Maven:
+
    ```bash
    ./mvnw spring-boot:run
    ```
+
    *The server will start on port `8080`. SQLite database file `safehaven.db` will be updated/created automatically.*
 
 ### How to Run Tests
+
 To run unit and integration tests (JUnit 5 + Mockito + MockMvc):
+
 ```bash
 ./mvnw test
 ```
@@ -57,6 +70,7 @@ To run unit and integration tests (JUnit 5 + Mockito + MockMvc):
 The frontend is a modern Single Page Application (SPA) built with **React**, **Material-UI (MUI)**, and **Vite**.
 
 ### Features
+
 - **Clean Admin Layout**: Utilizes MUI components (`Card`, `Table`, `Dialog`, `Switch`, `IconButton`, etc.) with a professional Indigo-Teal design system.
 - **Stats Dashboard**: Dynamic top metrics cards showing:
   - Total Catalog Products
@@ -69,18 +83,25 @@ The frontend is a modern Single Page Application (SPA) built with **React**, **M
 - **Visual indicators**: User feedback via loaders and snackbar notifications for all success/error actions.
 
 ### How to Run the Frontend
+
 1. Navigate to the `frontend` directory:
+
    ```bash
    cd frontend
    ```
+
 2. Install npm packages:
+
    ```bash
    npm install
    ```
+
 3. Run the development server:
+
    ```bash
    npm run dev
    ```
+
    *The client will start on port `5173` (or the next available port) and print a local URL (e.g. `http://localhost:5173/`). Open it in your browser.*
 
 ---
