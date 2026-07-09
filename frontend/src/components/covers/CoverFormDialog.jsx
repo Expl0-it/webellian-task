@@ -51,10 +51,19 @@ export default function CoverFormDialog({ open, productId, cover, onClose, onSav
   const handleSave = async () => {
     if (!validate()) return;
 
-    setSaving(true);
     const payload = { ...form, coverageLimit: parseFloat(form.coverageLimit) };
+    const isEdit = !!form.id;
+
+    // Draft mode: the parent product doesn't exist yet (still being created), so
+    // there's nothing to call the API with. Just hand the validated data back —
+    // the parent holds it in local state and sends it along with the create request.
+    if (!productId) {
+      onSaved({ ...payload, id: isEdit ? form.id : `draft-${Date.now()}-${Math.random().toString(36).slice(2, 8)}` });
+      return;
+    }
+
+    setSaving(true);
     try {
-      const isEdit = !!form.id;
       const saved = isEdit ? await updateCover(productId, form.id, payload) : await addCover(productId, payload);
       showToast(`Cover "${form.name}" saved.`);
       onSaved(saved);
