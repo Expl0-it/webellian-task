@@ -30,6 +30,10 @@ The backend is built with **Spring Boot 4.1.0** and **Java 21**, using a local r
 > database but in `backend/src/main/resources/application.properties` there is
 > also a commented configuration for persistent db using SQLite .db file.
 
+> [!WARNING]
+> Database is seeded with mock data when running the project, the script was
+> created for testing purposes and is to be deleted upon deployment.
+
 ### Features
 
 - **Relational Persistence**: Uses SQLite with Hibernate and Spring Data JPA.
